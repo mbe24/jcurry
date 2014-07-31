@@ -1,0 +1,4 @@
+jcurry
+======
+
+Currying for Java
