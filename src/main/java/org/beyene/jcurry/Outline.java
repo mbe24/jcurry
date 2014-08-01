@@ -16,6 +16,7 @@
  */
 package org.beyene.jcurry;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,25 +29,61 @@ import java.util.Map;
 
 public final class Outline<T> implements Iterable<Method> {
 
+	private static final Outline<Object> oo = new Outline<>(Object.class);
+
 	private final Class<? extends T> clazz;
 
 	private final Collection<Method> methods;
 	private final Map<String, List<Method>> index;
+	private Map<String, List<Method>> indexFiltered;
+
+	private final Collection<Constructor<T>> constructors;
+	private final Map<Integer, List<Constructor<T>>> ctorIndex;
 
 	public Outline(Class<? extends T> clazz) {
 		this.clazz = clazz;
 		this.methods = Arrays.asList(clazz.getMethods());
 
-		Map<String, List<Method>> map = new HashMap<>();
+		final Map<String, List<Method>> map = new HashMap<>();
 		this.methods.stream().forEach(
 				method -> map.computeIfAbsent(method.getName(),
-						k -> new ArrayList<>()).add(method));
+						name -> new ArrayList<>()).add(method));
 
 		this.index = Collections.unmodifiableMap(map);
+
+		Collection<Constructor<T>> ctors = new ArrayList<>();
+		for (Constructor<?> ctor : clazz.getConstructors()) {
+			@SuppressWarnings("unchecked")
+			Constructor<T> typedCtor = (Constructor<T>) ctor;
+			ctors.add(typedCtor);
+		}
+		this.constructors = Collections.unmodifiableCollection(ctors);
+
+		final Map<Integer, List<Constructor<T>>> tmp = new HashMap<>();
+		this.constructors.stream().forEach(
+				ctor -> tmp.computeIfAbsent(ctor.getParameterCount(),
+						pc -> new ArrayList<>()).add(ctor));
+		this.ctorIndex = Collections.unmodifiableMap(tmp);
+	}
+
+	public Map<Integer, List<Constructor<T>>> constructorMap() {
+		return ctorIndex;
 	}
 
 	public Map<String, List<Method>> methodMap() {
 		return index;
+	}
+
+	public Map<String, List<Method>> methodMapFiltered() {
+		if (indexFiltered != null)
+			return indexFiltered;
+
+		Map<String, List<Method>> map = new HashMap<>(index);
+		for (String method : oo.methodMap().keySet())
+			map.remove(method);
+		this.indexFiltered = map;
+
+		return indexFiltered;
 	}
 
 	public boolean hasMethod(String name) {

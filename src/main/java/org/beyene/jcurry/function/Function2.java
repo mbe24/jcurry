@@ -16,23 +16,25 @@
  */
 package org.beyene.jcurry.function;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Executable;
 import java.util.Collection;
+
+import org.beyene.jcurry.function.util.CommonExecutable;
 
 public final class Function2<T, P1, P2> extends
 		AbstractFunction<P2, Function1<T, P1>, T> {
 
-	protected Function2(Object invoker, Method method, Class<T> returnType,
+	protected Function2(CommonExecutable<T> executable,
 			Collection<Object> arguments) {
-		super(invoker, method, returnType, arguments);
+		super(executable, arguments);
 	}
 
-	public Function2(Object invoker, Method method, Class<T> returnType) {
-		super(invoker, method, returnType);
+	public Function2(Object invoker, Executable e, Class<? extends T> returnType) {
+		super(invoker, e, returnType);
 	}
 
-	public Function2(Method method, Class<T> returnType) {
-		super(null, method, returnType);
+	public Function2(Executable e, Class<? extends T> returnType) {
+		super(null, e, returnType);
 	}
 
 	public Function1<T, P1> p2(P2 t) {
@@ -40,8 +42,8 @@ public final class Function2<T, P1, P2> extends
 	}
 
 	@Override
-	protected Function1<T, P1> lof(Object invoker, Method method,
-			Class<T> returnType, Collection<Object> arguments) {
-		return new Function1<>(invoker, method, returnType, arguments);
+	protected Function1<T, P1> lof(CommonExecutable<T> executable,
+			Collection<Object> arguments) {
+		return new Function1<>(executable, arguments);
 	}
 }

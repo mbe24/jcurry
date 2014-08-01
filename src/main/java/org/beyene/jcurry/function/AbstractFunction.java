@@ -16,12 +16,15 @@
  */
 package org.beyene.jcurry.function;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Executable;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.function.Function;
+
+import org.beyene.jcurry.function.util.CommonExecutable;
+import org.beyene.jcurry.function.util.ConcreteExecutable;
 
 /**
  * 
@@ -36,36 +39,34 @@ import java.util.function.Function;
  */
 abstract class AbstractFunction<P, LOF, R> implements Function<P, LOF> {
 
-	protected final Object invoker;
-	protected final Method method;
-
-	protected final Class<R> returnType;
-
+	protected final CommonExecutable<R> executable;
 	protected final Collection<Object> args;
 
-	protected AbstractFunction(Object invoker, Method method,
-			Class<R> returnType, Collection<Object> args) {
-		this.invoker = invoker;
-
-		this.method = method;
-		method.setAccessible(true);
-
-		this.returnType = returnType;
+	protected AbstractFunction(CommonExecutable<R> executable,
+			Collection<Object> args) {
+		this.executable = executable;
 		this.args = Collections.unmodifiableCollection(args);
 	}
 
-	protected AbstractFunction(Object invoker, Method method,
-			Class<R> returnType) {
-		this(invoker, method, returnType, new ArrayDeque<>());
+	protected AbstractFunction(Object invoker, Executable e,
+			Class<? extends R> returnType, Collection<Object> args) {
+		e.setAccessible(true);
+		this.executable = ConcreteExecutable.get(invoker, e, returnType);
+		this.args = Collections.unmodifiableCollection(args);
+	}
+
+	protected AbstractFunction(Object invoker, Executable e,
+			Class<? extends R> returnType) {
+		this(invoker, e, returnType, new ArrayDeque<>());
 	}
 
 	@Override
 	public LOF apply(P t) {
 		Deque<Object> copy = new ArrayDeque<>(args);
-		copy.offerLast(t);
-		return lof(invoker, method, returnType, copy);
+		copy.offerFirst(t);
+		return lof(executable, copy);
 	}
 
-	protected abstract LOF lof(Object invoker, Method method,
-			Class<R> returnType, Collection<Object> arguments);
+	protected abstract LOF lof(CommonExecutable<R> executable,
+			Collection<Object> arguments);
 }
