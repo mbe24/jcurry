@@ -16,12 +16,15 @@
  */
 package org.beyene.jcurry.function;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.beyene.jcurry.function.util.CommonExecutable;
+import org.beyene.jcurry.function.util.exception.CommonExecutableException;
 
-public final class Function0<T, E extends Exception> extends AbstractFunction<Void, T, T, E> {
+public final class Function0<T, E extends Exception> extends
+		AbstractFunction<Void, T, T, E> {
 
-	protected Function0(CommonExecutable<T, E> executable,
-			Object[] args) {
+	protected Function0(CommonExecutable<T, E> executable, Object[] args) {
 		super(executable, args);
 	}
 
@@ -34,18 +37,30 @@ public final class Function0<T, E extends Exception> extends AbstractFunction<Vo
 		try {
 			return executable.call(args);
 		} catch (Exception e) {
-			e.printStackTrace();
 			return null;
 		}
 	}
 
 	public T call() throws E {
-		return executable.call(args);
+		try {
+			return executable.call(args);
+		} catch (CommonExecutableException e) {
+			Throwable c = e.getCause();
+			if (c instanceof InvocationTargetException) {
+				InvocationTargetException ite = (InvocationTargetException) c;
+				if (executable.getExceptionType().isAssignableFrom(
+						ite.getCause().getClass())) {
+					E exception = executable.getExceptionType().cast(
+							ite.getCause());
+					throw exception;
+				}
+			}
+			throw e;
+		}
 	}
 
 	@Override
-	protected T lof(CommonExecutable<T, E> executable,
-			Object[] args) {
+	protected T lof(CommonExecutable<T, E> executable, Object[] args) {
 		return null;
 	}
 

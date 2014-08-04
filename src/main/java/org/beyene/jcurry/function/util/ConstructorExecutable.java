@@ -23,10 +23,13 @@ import org.beyene.jcurry.function.util.exception.CommonExecutableException;
 class ConstructorExecutable<T, E extends Exception> implements CommonExecutable<T, E> {
 
 	private final Constructor<T> constructor;
-
-	public ConstructorExecutable(Constructor<T> constructor, Class<? extends E> exceptionType) {
+	private final Class<E> exceptionType;
+	
+	public ConstructorExecutable(Constructor<T> constructor, Class<E> exceptionType) {
 		this.constructor = constructor;
 		this.constructor.setAccessible(true);
+		
+		this.exceptionType = exceptionType;
 	}
 
 	@Override
@@ -43,5 +46,10 @@ class ConstructorExecutable<T, E extends Exception> implements CommonExecutable<
 	@Override
 	public String toString() {
 		return constructor.getDeclaringClass().getName() + " constructor";
+	}
+
+	@Override
+	public Class<E> getExceptionType() {
+		return exceptionType;
 	}
 }

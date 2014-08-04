@@ -19,41 +19,43 @@ package org.beyene.jcurry.function.util;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
+import org.beyene.jcurry.function.util.exception.NoException;
+
 public final class ConcreteExecutable<T, E extends Exception> implements
 		CommonExecutable<T, E> {
 
 	private final CommonExecutable<T, E> ce;
 
 	public ConcreteExecutable(Object invoker, Method method,
-			Class<? extends T> returnType, Class<? extends E> exceptionType) {
+			Class<? extends T> returnType, Class<E> exceptionType) {
 		this.ce = new MethodExecutable<>(invoker, method, returnType,
 				exceptionType);
 	}
 
-	public ConcreteExecutable(Constructor<T> c, Class<? extends E> exceptionType) {
+	public ConcreteExecutable(Constructor<T> c, Class<E> exceptionType) {
 		this.ce = new ConstructorExecutable<>(c, exceptionType);
 	}
 
 
-	public static <R> ConcreteExecutable<R, RuntimeException> get(
+	public static <R> CommonExecutable<R, NoException> get(
 			Object invoker, Method m, Class<? extends R> returnType) {
-		return get(invoker, m, returnType, RuntimeException.class);
+		return get(invoker, m, returnType, NoException.class);
 	}
 	
-	public static <R, E extends Exception> ConcreteExecutable<R, E> get(
+	public static <R, E extends Exception> CommonExecutable<R, E> get(
 			Object invoker, Method m, Class<? extends R> returnType,
-			Class<? extends E> exceptionType) {
+			Class<E> exceptionType) {
 		return new ConcreteExecutable<R, E>(invoker, m, returnType,
 				exceptionType);
 	}
 
-	public static <R> ConcreteExecutable<R, RuntimeException> get(
+	public static <R> CommonExecutable<R, NoException> get(
 			Constructor<R> c) {
-		return get(c, RuntimeException.class);
+		return get(c, NoException.class);
 	}
 
-	public static <R, E extends Exception> ConcreteExecutable<R, E> get(Constructor<R> c,
-			Class<? extends E> exceptionType) {
+	public static <R, E extends Exception> CommonExecutable<R, E> get(Constructor<R> c,
+			Class<E> exceptionType) {
 		return new ConcreteExecutable<R, E>(c, exceptionType);
 	}
 
@@ -65,5 +67,10 @@ public final class ConcreteExecutable<T, E extends Exception> implements
 	@Override
 	public String toString() {
 		return ce.toString();
+	}
+
+	@Override
+	public Class<E> getExceptionType() {
+		return ce.getExceptionType();
 	}
 }

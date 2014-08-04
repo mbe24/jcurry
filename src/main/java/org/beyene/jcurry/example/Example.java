@@ -1,5 +1,6 @@
 package org.beyene.jcurry.example;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -16,33 +17,39 @@ import org.beyene.jcurry.function.Function2;
 import org.beyene.jcurry.function.Function4;
 import org.beyene.jcurry.function.util.CommonExecutable;
 import org.beyene.jcurry.function.util.ConcreteExecutable;
+import org.beyene.jcurry.function.util.exception.NoException;
 
 public class Example {
 
 	public static void main(String[] args) throws NoSuchMethodException,
 			SecurityException, ClassNotFoundException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException, InstantiationException {
+			IllegalArgumentException, InvocationTargetException,
+			InstantiationException {
 		Car car = new Car();
 		Class<? extends Car> clazz = car.getClass();
 
 		Outline<Car> co = new Outline<Car>(clazz);
 
-		for (Entry<String, List<Method>> entry : co.methodMapFiltered().entrySet())
+		for (Entry<String, List<Method>> entry : co.methodMapFiltered()
+				.entrySet())
 			System.out.printf("name=%s, count=%s, method(s)=%s%n", entry
 					.getKey(), entry.getValue().size(), entry.getValue()
 					.toString());
 
 		Method byRegEx = co.search("tir");
 		System.out.printf("Method matched: name=%s%n", byRegEx.getName());
-		CommonExecutable<String, RuntimeException> tires = ConcreteExecutable.get(car, byRegEx, String.class);
-		
-		Function4<String, RuntimeException, Integer, Integer, Integer, Integer> f4 = new Function4<>(tires);
-		Function1<String, RuntimeException, Integer> f1 = f4.p4(5).p3(5).p2(5);
+		CommonExecutable<String, NoException> tires = ConcreteExecutable.get(
+				car, byRegEx, String.class);
+
+		Function4<String, NoException, Integer, Integer, Integer, Integer> f4 = new Function4<>(
+				tires);
+		Function1<String, NoException, Integer> f1 = f4.p4(5).p3(5).p2(5);
 		System.out.println(f1.toString());
-		Function0<String, RuntimeException> f0 = f1.p1(5);
+		Function0<String, NoException> f0 = f1.p1(5);
 
 		String resF0 = f0.call();
-		System.out.printf("Function %s evaluates to '%s'.%n", f0.toString(), resF0);
+		System.out.printf("Function %s evaluates to '%s'.%n", f0.toString(),
+				resF0);
 
 		Function<Integer, Integer> h = (Integer a) -> (a + 5);
 		@SuppressWarnings("unchecked")
@@ -51,29 +58,48 @@ public class Example {
 		Method apply = fo.search("app");
 		System.out.printf("Method matched: name=%s%n", apply.getName());
 
-		CommonExecutable<Integer, RuntimeException> ceApply = ConcreteExecutable.get(h, apply, Integer.class);
-		Function1<Integer, RuntimeException, Integer> h1 = new Function1<>(ceApply);
-		Function0<Integer, RuntimeException> h0 = h1.p1(10);
+		CommonExecutable<Integer, NoException> ceApply = ConcreteExecutable
+				.get(h, apply, Integer.class);
+		Function1<Integer, NoException, Integer> h1 = new Function1<>(ceApply);
+		Function0<Integer, NoException> h0 = h1.p1(10);
 
 		Integer resH0 = h0.call();
 		System.out.printf("Function evaluates to '%d'.%n", resH0);
-		
-		for (Entry<Integer, List<Constructor<Car>>> entry : co.constructorMap().entrySet())
+
+		for (Entry<Integer, List<Constructor<Car>>> entry : co.constructorMap()
+				.entrySet())
 			System.out.printf("#parameter=%d, count=%s, method(s)=%s%n", entry
 					.getKey(), entry.getValue().size(), entry.getValue()
 					.toString());
-		
+
 		Constructor<Car> ctor = co.constructorMap().get(2).iterator().next();
-		Car ccar = ctor.newInstance("carname", Calendar.getInstance().getTime());
+		Car ccar = ctor
+				.newInstance("carname", Calendar.getInstance().getTime());
 		System.out.println(ccar);
-		
-		CommonExecutable<Car, RuntimeException> ceCtor = ConcreteExecutable.get(ctor);
-		Function2<Car, RuntimeException, String, Date> ctorF2 = new Function2<Car, RuntimeException, String, Date>(ceCtor);
-		Function1<Car, RuntimeException, String> ctorF1 = ctorF2.p2(Calendar.getInstance().getTime());
-		Function0<Car, RuntimeException> ctorF0 = ctorF1.p1("jcurry-builder-pattern-car");
+
+		CommonExecutable<Car, NoException> ceCtor = ConcreteExecutable
+				.get(ctor);
+		Function2<Car, NoException, String, Date> ctorF2 = new Function2<Car, NoException, String, Date>(
+				ceCtor);
+		Function1<Car, NoException, String> ctorF1 = ctorF2.p2(Calendar
+				.getInstance().getTime());
+		Function0<Car, NoException> ctorF0 = ctorF1
+				.p1("jcurry-builder-pattern-car");
 		Car jcbc = ctorF0.call();
 		System.out.println(jcbc);
 		System.out.println(ctorF0.toString());
+
+		Method fill = co.search("fill");
+		CommonExecutable<Boolean, IOException> ceFill = ConcreteExecutable.get(
+				car, fill, boolean.class, IOException.class);
+		Function1<Boolean, IOException, Integer> funcFillF1 = new Function1<Boolean, IOException, Integer>(
+				ceFill);
+		Function0<Boolean, IOException> call4ex = funcFillF1.p1(5);
+		try {
+			call4ex.call();
+		} catch (IOException e) {
+			System.out.println("Successfully forwarded exception. And extracted message: " + e.getMessage());
+		}
 	}
 
 	static class Car {
@@ -102,6 +128,10 @@ public class Example {
 
 		public String getName() {
 			return name;
+		}
+
+		public boolean fillTank(int liter) throws IOException {
+			throw new IOException("tank is full");
 		}
 
 		public Date getCreatedAt() {

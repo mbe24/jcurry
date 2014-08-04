@@ -47,4 +47,11 @@ public interface CommonExecutable<T, E extends Exception> {
 	 *             is thrown the common executable is misconfigured
 	 */
 	public T call(Object... args) throws E;
+
+	/**
+	 * Returns type of exception that may be thrown when call is invoked.
+	 * 
+	 * @return class of exception
+	 */
+	public Class<E> getExceptionType();
 }

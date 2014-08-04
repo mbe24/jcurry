@@ -23,11 +23,12 @@ import org.beyene.jcurry.function.util.exception.ReturnTypeException;
 
 class MethodExecutable<T, E extends Exception> implements CommonExecutable<T, E> {
 
-	protected final Object invoker;
-	protected final Method method;
-	protected final Class<? extends T> returnType;
+	private final Object invoker;
+	private final Method method;
+	private final Class<? extends T> returnType;
+	private final Class<E> exceptionType;
 
-	public MethodExecutable(Object invoker, Method method, Class<? extends T> returnType, Class<? extends E> exceptionType) {
+	public MethodExecutable(Object invoker, Method method, Class<? extends T> returnType, Class<E> exceptionType) {
 		this.invoker = invoker;
 		this.method = method;
 		this.method.setAccessible(true);
@@ -36,6 +37,8 @@ class MethodExecutable<T, E extends Exception> implements CommonExecutable<T, E>
 		Class<?> rt = method.getReturnType();
 		if (!rt.isAssignableFrom(returnType))
 			throw new ReturnTypeException(rt, returnType);
+		
+		this.exceptionType = exceptionType;
 	}
 
 	@Override
@@ -52,5 +55,10 @@ class MethodExecutable<T, E extends Exception> implements CommonExecutable<T, E>
 	@Override
 	public String toString() {
 		return method.getName();
+	}
+
+	@Override
+	public Class<E> getExceptionType() {
+		return exceptionType;
 	}
 }
