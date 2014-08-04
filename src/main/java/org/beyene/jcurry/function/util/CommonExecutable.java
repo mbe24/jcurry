@@ -16,7 +16,35 @@
  */
 package org.beyene.jcurry.function.util;
 
-public interface CommonExecutable<T> {
+import org.beyene.jcurry.function.util.exception.CommonExecutableException;
 
-	public T call(Object... args);
+/**
+ * Represents a function that can be executed as is.
+ * 
+ * Can be a static method that doesn't need an object to be invoked on, a
+ * ordinary method or a constructor.
+ * 
+ * @author mbeyene
+ *
+ * @param <T>
+ *            return type
+ * @param <E>
+ *            exception that is thrown by method call, if no exception is thrown
+ *            specifiy any unchecked exception type e. g.
+ *            {@link RuntimeException}
+ */
+public interface CommonExecutable<T, E extends Exception> {
+
+	/**
+	 * Calls function with parameter list given parameter list.
+	 * 
+	 * @param args
+	 *            method parameter
+	 * @return result of underlying function
+	 * @throws E
+	 *             exception to be thrown
+	 * @throws CommonExecutableException
+	 *             is thrown the common executable is misconfigured
+	 */
+	public T call(Object... args) throws E;
 }

@@ -14,6 +14,8 @@ import org.beyene.jcurry.function.Function0;
 import org.beyene.jcurry.function.Function1;
 import org.beyene.jcurry.function.Function2;
 import org.beyene.jcurry.function.Function4;
+import org.beyene.jcurry.function.util.CommonExecutable;
+import org.beyene.jcurry.function.util.ConcreteExecutable;
 
 public class Example {
 
@@ -32,11 +34,11 @@ public class Example {
 
 		Method byRegEx = co.search("tir");
 		System.out.printf("Method matched: name=%s%n", byRegEx.getName());
-
-		Function4<String, Integer, Integer, Integer, Integer> f4 = new Function4<>(
-				car, byRegEx, String.class);
-		Function1<String, Integer> f1 = f4.p4(5).p3(5).p2(5);
-		Function0<String> f0 = f1.p1(5);
+		CommonExecutable<String, RuntimeException> tires = ConcreteExecutable.get(car, byRegEx, String.class);
+		
+		Function4<String, RuntimeException, Integer, Integer, Integer, Integer> f4 = new Function4<>(tires);
+		Function1<String, RuntimeException, Integer> f1 = f4.p4(5).p3(5).p2(5);
+		Function0<String, RuntimeException> f0 = f1.p1(5);
 
 		String resF0 = f0.call();
 		System.out.printf("Function evaluates to '%s'.%n", resF0);
@@ -48,9 +50,9 @@ public class Example {
 		Method apply = fo.search("app");
 		System.out.printf("Method matched: name=%s%n", apply.getName());
 
-		Function1<Integer, Integer> h1 = new Function1<>(h, apply,
-				Integer.class);
-		Function0<Integer> h0 = h1.p1(10);
+		CommonExecutable<Integer, RuntimeException> ceApply = ConcreteExecutable.get(h, apply, Integer.class);
+		Function1<Integer, RuntimeException, Integer> h1 = new Function1<>(ceApply);
+		Function0<Integer, RuntimeException> h0 = h1.p1(10);
 
 		Integer resH0 = h0.call();
 		System.out.printf("Function evaluates to '%d'.%n", resH0);
@@ -63,8 +65,10 @@ public class Example {
 		Constructor<Car> ctor = co.constructorMap().get(2).iterator().next();
 		Car ccar = ctor.newInstance("carname", Calendar.getInstance().getTime());
 		System.out.println(ccar);
-		Function2<Car, String, Date> ctorF2 = new Function2<Car, String, Date>(ctor, clazz);
-		Function1<Car, String> ctorF1 = ctorF2.p2(Calendar.getInstance().getTime());
+		
+		CommonExecutable<Car, RuntimeException> ceCtor = ConcreteExecutable.get(ctor);
+		Function2<Car, RuntimeException, String, Date> ctorF2 = new Function2<Car, RuntimeException, String, Date>(ceCtor);
+		Function1<Car, RuntimeException, String> ctorF1 = ctorF2.p2(Calendar.getInstance().getTime());
 		Car jcbc = ctorF1.p1("jcurry-builder-pattern-car").call();
 		System.out.println(jcbc);
 	}

@@ -47,7 +47,8 @@ public final class Outline<T> implements Iterable<Method> {
 		final Map<String, List<Method>> map = new HashMap<>();
 		this.methods.stream().forEach(
 				method -> map.computeIfAbsent(method.getName(),
-						name -> new ArrayList<>()).add(method));
+						name -> new ArrayList<>())
+						.add(method));
 
 		this.index = Collections.unmodifiableMap(map);
 

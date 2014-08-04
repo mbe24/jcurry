@@ -16,34 +16,30 @@
  */
 package org.beyene.jcurry.function;
 
-import java.lang.reflect.Executable;
+import java.util.ArrayDeque;
 import java.util.Collection;
 
 import org.beyene.jcurry.function.util.CommonExecutable;
 
-public class Function5<T, P1, P2, P3, P4, P5> extends
-		AbstractFunction<P5, Function4<T, P1, P2, P3, P4>, T> {
+public class Function5<T, E extends Exception, P1, P2, P3, P4, P5> extends
+		AbstractFunction<P5, Function4<T, E, P1, P2, P3, P4>, T, E> {
 
-	protected Function5(CommonExecutable<T> executable,
+	protected Function5(CommonExecutable<T, E> executable,
 			Collection<Object> arguments) {
 		super(executable, arguments);
 	}
 
-	public Function5(Object invoker, Executable e, Class<? extends T> returnType) {
-		super(invoker, e, returnType);
+	public Function5(CommonExecutable<T, E> executable) {
+		super(executable, new ArrayDeque<>());
 	}
 
-	public Function5(Executable e, Class<? extends T> returnType) {
-		super(null, e, returnType);
-	}
-
-	public Function4<T, P1, P2, P3, P4> p5(P5 t) {
+	public Function4<T, E, P1, P2, P3, P4> p5(P5 t) {
 		return apply(t);
 	}
 
 	@Override
-	protected Function4<T, P1, P2, P3, P4> lof(CommonExecutable<T> executable,
-			Collection<Object> arguments) {
+	protected Function4<T, E, P1, P2, P3, P4> lof(
+			CommonExecutable<T, E> executable, Collection<Object> arguments) {
 		return new Function4<>(executable, arguments);
 	}
 }

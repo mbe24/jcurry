@@ -16,7 +16,6 @@
  */
 package org.beyene.jcurry.function;
 
-import java.lang.reflect.Executable;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,7 +23,6 @@ import java.util.Deque;
 import java.util.function.Function;
 
 import org.beyene.jcurry.function.util.CommonExecutable;
-import org.beyene.jcurry.function.util.ConcreteExecutable;
 
 /**
  * 
@@ -36,28 +34,23 @@ import org.beyene.jcurry.function.util.ConcreteExecutable;
  *            lower-order function
  * @param <R>
  *            return type
+ * @param <E>
+ *            type of exception thrown by call method
  */
-abstract class AbstractFunction<P, LOF, R> implements Function<P, LOF> {
+abstract class AbstractFunction<P, LOF, R, E extends Exception> implements
+		Function<P, LOF> {
 
-	protected final CommonExecutable<R> executable;
+	protected final CommonExecutable<R, E> executable;
 	protected final Collection<Object> args;
 
-	protected AbstractFunction(CommonExecutable<R> executable,
+	protected AbstractFunction(CommonExecutable<R, E> executable,
 			Collection<Object> args) {
 		this.executable = executable;
 		this.args = Collections.unmodifiableCollection(args);
 	}
 
-	protected AbstractFunction(Object invoker, Executable e,
-			Class<? extends R> returnType, Collection<Object> args) {
-		e.setAccessible(true);
-		this.executable = ConcreteExecutable.get(invoker, e, returnType);
-		this.args = Collections.unmodifiableCollection(args);
-	}
-
-	protected AbstractFunction(Object invoker, Executable e,
-			Class<? extends R> returnType) {
-		this(invoker, e, returnType, new ArrayDeque<>());
+	public AbstractFunction(CommonExecutable<R, E> executable) {
+		this(executable, new ArrayDeque<>());
 	}
 
 	@Override
@@ -67,6 +60,6 @@ abstract class AbstractFunction<P, LOF, R> implements Function<P, LOF> {
 		return lof(executable, copy);
 	}
 
-	protected abstract LOF lof(CommonExecutable<R> executable,
+	protected abstract LOF lof(CommonExecutable<R, E> executable,
 			Collection<Object> arguments);
 }

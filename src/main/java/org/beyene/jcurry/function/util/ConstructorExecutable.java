@@ -17,24 +17,26 @@
 package org.beyene.jcurry.function.util;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
-class ConstructorExecutable<T> implements CommonExecutable<T> {
+import org.beyene.jcurry.function.util.exception.CommonExecutableException;
+
+class ConstructorExecutable<T, E extends Exception> implements CommonExecutable<T, E> {
 
 	private final Constructor<T> constructor;
 
-	public ConstructorExecutable(Constructor<T> constructor) {
+	public ConstructorExecutable(Constructor<T> constructor, Class<? extends E> exceptionType) {
 		this.constructor = constructor;
+		this.constructor.setAccessible(true);
 	}
 
 	@Override
-	public T call(Object... args) {
+	public T call(Object... args) throws E {
 		try {
 			return constructor.newInstance(args);
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException e) {
-			e.printStackTrace();
-			return null;
+		} catch (ReflectiveOperationException e) {
+			throw new CommonExecutableException(e.getMessage(), e);
+		} catch (IllegalArgumentException e) {
+			throw new CommonExecutableException(e.getMessage(), e);
 		}
 	}
 }

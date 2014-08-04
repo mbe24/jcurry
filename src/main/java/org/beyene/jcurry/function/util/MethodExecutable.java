@@ -16,29 +16,36 @@
  */
 package org.beyene.jcurry.function.util;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-class MethodExecutable<T> implements CommonExecutable<T> {
+import org.beyene.jcurry.function.util.exception.CommonExecutableException;
+import org.beyene.jcurry.function.util.exception.ReturnTypeException;
+
+class MethodExecutable<T, E extends Exception> implements CommonExecutable<T, E> {
 
 	protected final Object invoker;
 	protected final Method method;
 	protected final Class<? extends T> returnType;
 
-	public MethodExecutable(Object invoker, Method method, Class<? extends T> returnType) {
+	public MethodExecutable(Object invoker, Method method, Class<? extends T> returnType, Class<? extends E> exceptionType) {
 		this.invoker = invoker;
 		this.method = method;
+		this.method.setAccessible(true);
 		this.returnType = returnType;
+		
+		Class<?> rt = method.getReturnType();
+		if (!rt.isAssignableFrom(returnType))
+			throw new ReturnTypeException(rt, returnType);
 	}
 
 	@Override
-	public T call(Object... args) {
+	public T call(Object... args) throws E {
 		try {
 			return returnType.cast(method.invoke(invoker, args));
-		} catch (IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e) {
-			e.printStackTrace();
-			return null;
+		} catch (ReflectiveOperationException e) {
+			throw new CommonExecutableException(e.getMessage(), e);
+		} catch (ClassCastException e) {
+			throw new CommonExecutableException(e.getMessage(), e);
 		}
 	}
 }

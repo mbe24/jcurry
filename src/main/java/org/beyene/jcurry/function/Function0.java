@@ -16,37 +16,38 @@
  */
 package org.beyene.jcurry.function;
 
-import java.lang.reflect.Executable;
+import java.util.ArrayDeque;
 import java.util.Collection;
 
 import org.beyene.jcurry.function.util.CommonExecutable;
 
-public final class Function0<T> extends AbstractFunction<Void, T, T> {
+public final class Function0<T, E extends Exception> extends AbstractFunction<Void, T, T, E> {
 
-	protected Function0(CommonExecutable<T> executable,
+	protected Function0(CommonExecutable<T, E> executable,
 			Collection<Object> args) {
 		super(executable, args);
 	}
 
-	public Function0(Object invoker, Executable e, Class<T> returnType) {
-		super(invoker, e, returnType);
-	}
-
-	public Function0(Executable e, Class<T> returnType) {
-		super(null, e, returnType);
+	public Function0(CommonExecutable<T, E> executable) {
+		super(executable, new ArrayDeque<>());
 	}
 
 	@Override
 	public T apply(Void t) {
+		try {
+			return executable.call(args.toArray());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public T call() throws E {
 		return executable.call(args.toArray());
 	}
 
-	public T call() {
-		return apply(null);
-	}
-
 	@Override
-	protected T lof(CommonExecutable<T> executable,
+	protected T lof(CommonExecutable<T, E> executable,
 			Collection<Object> arguments) {
 		return null;
 	}

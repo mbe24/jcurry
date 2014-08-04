@@ -17,32 +17,48 @@
 package org.beyene.jcurry.function.util;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 
-public final class ConcreteExecutable<T> implements CommonExecutable<T> {
+public final class ConcreteExecutable<T, E extends Exception> implements
+		CommonExecutable<T, E> {
 
-	private final CommonExecutable<T> ce;
-	
-	public ConcreteExecutable(Object invoker, Method method, Class<? extends T> returnType) {
-		this.ce = new MethodExecutable<>(invoker, method, returnType);
+	private final CommonExecutable<T, E> ce;
+
+	public ConcreteExecutable(Object invoker, Method method,
+			Class<? extends T> returnType, Class<? extends E> exceptionType) {
+		this.ce = new MethodExecutable<>(invoker, method, returnType,
+				exceptionType);
 	}
 
-	public ConcreteExecutable(Constructor<T> c) {
-		this.ce = new ConstructorExecutable<>(c);
+	public ConcreteExecutable(Constructor<T> c, Class<? extends E> exceptionType) {
+		this.ce = new ConstructorExecutable<>(c, exceptionType);
+	}
+
+
+	public static <R> ConcreteExecutable<R, RuntimeException> get(
+			Object invoker, Method m, Class<? extends R> returnType) {
+		return get(invoker, m, returnType, RuntimeException.class);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static <R> ConcreteExecutable<R> get(Object invoker, Executable e, Class<? extends R> returnType) {
-		if (e instanceof Method)
-			return new ConcreteExecutable<R>(invoker, (Method) e, returnType);
-		else if (e instanceof Constructor)
-			return new ConcreteExecutable<R>((Constructor<R>) e);
-		return null;
+	public static <R, E extends Exception> ConcreteExecutable<R, E> get(
+			Object invoker, Method m, Class<? extends R> returnType,
+			Class<? extends E> exceptionType) {
+		return new ConcreteExecutable<R, E>(invoker, m, returnType,
+				exceptionType);
 	}
-	
+
+	public static <R> ConcreteExecutable<R, RuntimeException> get(
+			Constructor<R> c) {
+		return get(c, RuntimeException.class);
+	}
+
+	public static <R, E extends Exception> ConcreteExecutable<R, E> get(Constructor<R> c,
+			Class<? extends E> exceptionType) {
+		return new ConcreteExecutable<R, E>(c, exceptionType);
+	}
+
 	@Override
-	public T call(Object... args) {
+	public T call(Object... args) throws E {
 		return ce.call(args);
 	}
 }
