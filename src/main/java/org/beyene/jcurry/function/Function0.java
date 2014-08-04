@@ -16,10 +16,7 @@
  */
 package org.beyene.jcurry.function;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.beyene.jcurry.function.util.CommonExecutable;
-import org.beyene.jcurry.function.util.exception.CommonExecutableException;
 
 public final class Function0<T, E extends Exception> extends
 		AbstractFunction<Void, T, T, E> {
@@ -42,21 +39,7 @@ public final class Function0<T, E extends Exception> extends
 	}
 
 	public T call() throws E {
-		try {
-			return executable.call(args);
-		} catch (CommonExecutableException e) {
-			Throwable c = e.getCause();
-			if (c instanceof InvocationTargetException) {
-				InvocationTargetException ite = (InvocationTargetException) c;
-				if (executable.getExceptionType().isAssignableFrom(
-						ite.getCause().getClass())) {
-					E exception = executable.getExceptionType().cast(
-							ite.getCause());
-					throw exception;
-				}
-			}
-			throw e;
-		}
+		return executable.call(args);
 	}
 
 	@Override

@@ -17,8 +17,10 @@
 package org.beyene.jcurry.function.util;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.beyene.jcurry.function.util.exception.CommonExecutableException;
 import org.beyene.jcurry.function.util.exception.NoException;
 
 public final class ConcreteExecutable<T, E extends Exception> implements
@@ -36,12 +38,11 @@ public final class ConcreteExecutable<T, E extends Exception> implements
 		this.ce = new ConstructorExecutable<>(c, exceptionType);
 	}
 
-
-	public static <R> CommonExecutable<R, NoException> get(
-			Object invoker, Method m, Class<? extends R> returnType) {
+	public static <R> CommonExecutable<R, NoException> get(Object invoker,
+			Method m, Class<? extends R> returnType) {
 		return get(invoker, m, returnType, NoException.class);
 	}
-	
+
 	public static <R, E extends Exception> CommonExecutable<R, E> get(
 			Object invoker, Method m, Class<? extends R> returnType,
 			Class<E> exceptionType) {
@@ -49,21 +50,40 @@ public final class ConcreteExecutable<T, E extends Exception> implements
 				exceptionType);
 	}
 
-	public static <R> CommonExecutable<R, NoException> get(
-			Constructor<R> c) {
+	public static <R> CommonExecutable<R, NoException> get(Constructor<R> c) {
 		return get(c, NoException.class);
 	}
 
-	public static <R, E extends Exception> CommonExecutable<R, E> get(Constructor<R> c,
-			Class<E> exceptionType) {
+	public static <R, E extends Exception> CommonExecutable<R, E> get(
+			Constructor<R> c, Class<E> exceptionType) {
 		return new ConcreteExecutable<R, E>(c, exceptionType);
 	}
 
 	@Override
 	public T call(Object... args) throws E {
-		return ce.call(args);
+		try {
+			return ce.call(args);
+		} catch (CommonExecutableException e) {
+			Throwable cause = e.getCause();
+			/*
+			 * exception that would be thrown during direct method invocation on
+			 * the object (w/o use of reflection) is encapsulated in a
+			 * reflection related exception and has to be unwrapped.
+			 */
+			if (cause instanceof InvocationTargetException) {
+				InvocationTargetException ite = (InvocationTargetException) cause;
+				Throwable methodException = ite.getCause();
+				if (ce.getExceptionType().isAssignableFrom(
+						methodException.getClass())) {
+					E exception = ce.getExceptionType().cast(methodException);
+					throw exception;
+				}
+			}
+			// otherwise...
+			throw e;
+		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return ce.toString();
