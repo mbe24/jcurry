@@ -48,4 +48,9 @@ class MethodExecutable<T, E extends Exception> implements CommonExecutable<T, E>
 			throw new CommonExecutableException(e.getMessage(), e);
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return method.getName();
+	}
 }

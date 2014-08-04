@@ -38,10 +38,11 @@ public class Example {
 		
 		Function4<String, RuntimeException, Integer, Integer, Integer, Integer> f4 = new Function4<>(tires);
 		Function1<String, RuntimeException, Integer> f1 = f4.p4(5).p3(5).p2(5);
+		System.out.println(f1.toString());
 		Function0<String, RuntimeException> f0 = f1.p1(5);
 
 		String resF0 = f0.call();
-		System.out.printf("Function evaluates to '%s'.%n", resF0);
+		System.out.printf("Function %s evaluates to '%s'.%n", f0.toString(), resF0);
 
 		Function<Integer, Integer> h = (Integer a) -> (a + 5);
 		@SuppressWarnings("unchecked")
@@ -69,8 +70,10 @@ public class Example {
 		CommonExecutable<Car, RuntimeException> ceCtor = ConcreteExecutable.get(ctor);
 		Function2<Car, RuntimeException, String, Date> ctorF2 = new Function2<Car, RuntimeException, String, Date>(ceCtor);
 		Function1<Car, RuntimeException, String> ctorF1 = ctorF2.p2(Calendar.getInstance().getTime());
-		Car jcbc = ctorF1.p1("jcurry-builder-pattern-car").call();
+		Function0<Car, RuntimeException> ctorF0 = ctorF1.p1("jcurry-builder-pattern-car");
+		Car jcbc = ctorF0.call();
 		System.out.println(jcbc);
+		System.out.println(ctorF0.toString());
 	}
 
 	static class Car {

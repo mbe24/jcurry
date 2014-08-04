@@ -61,4 +61,9 @@ public final class ConcreteExecutable<T, E extends Exception> implements
 	public T call(Object... args) throws E {
 		return ce.call(args);
 	}
+	
+	@Override
+	public String toString() {
+		return ce.toString();
+	}
 }

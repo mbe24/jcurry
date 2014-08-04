@@ -16,21 +16,18 @@
  */
 package org.beyene.jcurry.function;
 
-import java.util.ArrayDeque;
-import java.util.Collection;
-
 import org.beyene.jcurry.function.util.CommonExecutable;
 
 public final class Function2<T, E extends Exception, P1, P2> extends
 		AbstractFunction<P2, Function1<T, E, P1>, T, E> {
 
 	protected Function2(CommonExecutable<T, E> executable,
-			Collection<Object> arguments) {
-		super(executable, arguments);
+			Object[] args) {
+		super(executable, args);
 	}
 
 	public Function2(CommonExecutable<T, E> executable) {
-		super(executable, new ArrayDeque<>());
+		super(executable, 2);
 	}
 
 	public Function1<T, E, P1> p2(P2 t) {
@@ -39,7 +36,12 @@ public final class Function2<T, E extends Exception, P1, P2> extends
 
 	@Override
 	protected Function1<T, E, P1> lof(CommonExecutable<T, E> executable,
-			Collection<Object> arguments) {
-		return new Function1<>(executable, arguments);
+			Object[] args) {
+		return new Function1<>(executable, args);
+	}
+
+	@Override
+	protected int argPos() {
+		return 1;
 	}
 }

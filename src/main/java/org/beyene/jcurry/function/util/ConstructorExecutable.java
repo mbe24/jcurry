@@ -39,4 +39,9 @@ class ConstructorExecutable<T, E extends Exception> implements CommonExecutable<
 			throw new CommonExecutableException(e.getMessage(), e);
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return constructor.getDeclaringClass().getName() + " constructor";
+	}
 }

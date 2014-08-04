@@ -16,10 +16,7 @@
  */
 package org.beyene.jcurry.function;
 
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Deque;
+import java.util.Arrays;
 import java.util.function.Function;
 
 import org.beyene.jcurry.function.util.CommonExecutable;
@@ -41,25 +38,49 @@ abstract class AbstractFunction<P, LOF, R, E extends Exception> implements
 		Function<P, LOF> {
 
 	protected final CommonExecutable<R, E> executable;
-	protected final Collection<Object> args;
+	protected final Object[] args;
 
-	protected AbstractFunction(CommonExecutable<R, E> executable,
-			Collection<Object> args) {
+	protected AbstractFunction(CommonExecutable<R, E> executable, Object[] args) {
 		this.executable = executable;
-		this.args = Collections.unmodifiableCollection(args);
+		this.args = args;
 	}
 
-	public AbstractFunction(CommonExecutable<R, E> executable) {
-		this(executable, new ArrayDeque<>());
+	public AbstractFunction(CommonExecutable<R, E> executable, int argc) {
+		this(executable, new Object[argc]);
 	}
 
 	@Override
 	public LOF apply(P t) {
-		Deque<Object> copy = new ArrayDeque<>(args);
-		copy.offerFirst(t);
+		Object[] copy = Arrays.copyOf(args, args.length);
+		copy[argPos()] = t;
 		return lof(executable, copy);
 	}
 
-	protected abstract LOF lof(CommonExecutable<R, E> executable,
-			Collection<Object> arguments);
+	protected abstract LOF lof(CommonExecutable<R, E> executable, Object[] args);
+
+	protected abstract int argPos();
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		if (args.length < 1)
+			return executable.toString();
+
+		sb.append(executable.toString() + " ");
+		sb.append("(");
+		sb.append(convert(args[0]));
+		if (args.length > 1) {
+			for (int i = 1; i < this.args.length; i++)
+				sb.append(", " + convert(args[i]));
+		}
+		sb.append(")");
+		return sb.toString();
+	}
+
+	private String convert(Object o) {
+		if (o == null)
+			return "__";
+		else
+			return o.toString();
+	}
 }
