@@ -14,12 +14,12 @@
  * limitations under the License.
  * 
  */
-package org.beyene.jcurry.function.util;
+package org.beyene.jcurry.function.wrap;
 
 import java.lang.reflect.Method;
 
-import org.beyene.jcurry.function.util.exception.CommonExecutableException;
-import org.beyene.jcurry.function.util.exception.ReturnTypeException;
+import org.beyene.jcurry.function.wrap.exception.CommonExecutableException;
+import org.beyene.jcurry.function.wrap.exception.ReturnTypeException;
 
 class MethodExecutable<T, E extends Exception> implements CommonExecutable<T, E> {
 

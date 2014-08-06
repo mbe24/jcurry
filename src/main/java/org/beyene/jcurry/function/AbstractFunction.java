@@ -19,7 +19,7 @@ package org.beyene.jcurry.function;
 import java.util.Arrays;
 import java.util.function.Function;
 
-import org.beyene.jcurry.function.util.CommonExecutable;
+import org.beyene.jcurry.function.wrap.CommonExecutable;
 
 /**
  * 

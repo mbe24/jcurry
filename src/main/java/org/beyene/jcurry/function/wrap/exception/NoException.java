@@ -1,4 +1,4 @@
-package org.beyene.jcurry.function.util.exception;
+package org.beyene.jcurry.function.wrap.exception;
 
 public final class NoException extends RuntimeException {
 

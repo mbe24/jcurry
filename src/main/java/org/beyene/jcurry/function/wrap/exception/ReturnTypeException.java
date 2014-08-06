@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  */
-package org.beyene.jcurry.function.util.exception;
+package org.beyene.jcurry.function.wrap.exception;
 
 
 public class ReturnTypeException extends CommonExecutableException {

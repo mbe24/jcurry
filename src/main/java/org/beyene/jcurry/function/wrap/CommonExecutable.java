@@ -14,9 +14,9 @@
  * limitations under the License.
  * 
  */
-package org.beyene.jcurry.function.util;
+package org.beyene.jcurry.function.wrap;
 
-import org.beyene.jcurry.function.util.exception.CommonExecutableException;
+import org.beyene.jcurry.function.wrap.exception.CommonExecutableException;
 
 /**
  * Represents a function that can be executed as is.

@@ -14,17 +14,21 @@
  * limitations under the License.
  * 
  */
-package org.beyene.jcurry.function.util.exception;
+package org.beyene.jcurry.function.wrap;
 
-public class CommonExecutableException extends RuntimeException {
+import org.junit.Test;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class ConstructorExecutableTest {
 
-	public CommonExecutableException(String message, Throwable cause) {
-		super(message, cause);
+	@Test
+	public void testCall() throws Exception {
+		// TODO
+		throw new RuntimeException("not yet implemented");
 	}
-	
+
+	@Test
+	public void testGetExceptionType() throws Exception {
+		// TODO
+		throw new RuntimeException("not yet implemented");
+	}
 }

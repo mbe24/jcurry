@@ -14,14 +14,14 @@
  * limitations under the License.
  * 
  */
-package org.beyene.jcurry.function.util;
+package org.beyene.jcurry.function.wrap;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.beyene.jcurry.function.util.exception.CommonExecutableException;
-import org.beyene.jcurry.function.util.exception.NoException;
+import org.beyene.jcurry.function.wrap.exception.CommonExecutableException;
+import org.beyene.jcurry.function.wrap.exception.NoException;
 
 public final class ConcreteExecutable<T, E extends Exception> implements
 		CommonExecutable<T, E> {

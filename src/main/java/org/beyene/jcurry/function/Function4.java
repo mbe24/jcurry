@@ -16,7 +16,7 @@
  */
 package org.beyene.jcurry.function;
 
-import org.beyene.jcurry.function.util.CommonExecutable;
+import org.beyene.jcurry.function.wrap.CommonExecutable;
 
 public final class Function4<T, E extends Exception, P1, P2, P3, P4> extends
 		AbstractFunction<P4, Function3<T, E, P1, P2, P3>, T, E> {

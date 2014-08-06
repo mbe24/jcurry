@@ -15,9 +15,9 @@ import org.beyene.jcurry.function.Function0;
 import org.beyene.jcurry.function.Function1;
 import org.beyene.jcurry.function.Function2;
 import org.beyene.jcurry.function.Function4;
-import org.beyene.jcurry.function.util.CommonExecutable;
-import org.beyene.jcurry.function.util.ConcreteExecutable;
-import org.beyene.jcurry.function.util.exception.NoException;
+import org.beyene.jcurry.function.wrap.CommonExecutable;
+import org.beyene.jcurry.function.wrap.ConcreteExecutable;
+import org.beyene.jcurry.function.wrap.exception.NoException;
 
 public class Example {
 
