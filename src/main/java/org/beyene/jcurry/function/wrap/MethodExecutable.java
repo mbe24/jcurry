@@ -35,8 +35,9 @@ class MethodExecutable<T, E extends Exception> implements CommonExecutable<T, E>
 		this.returnType = returnType;
 		
 		Class<?> rt = method.getReturnType();
+    // TODO add suport for primitives
 		if (rt.isPrimitive())
-			;// TODO add suport for primitives
+      ;
 		
 		if (!rt.isAssignableFrom(returnType))
 			throw new ReturnTypeException(rt, returnType);

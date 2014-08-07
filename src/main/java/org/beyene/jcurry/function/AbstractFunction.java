@@ -56,7 +56,7 @@ abstract class AbstractFunction<P, LOF, R, E extends Exception> implements
 		return lof(executable, copy);
 	}
 
-	protected abstract LOF lof(CommonExecutable<R, E> executable, Object[] args);
+  protected abstract LOF lof(CommonExecutable<R, E> function, Object[] parameters);
 
 	protected abstract int argPos();
 

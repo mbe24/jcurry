@@ -1,4 +1,5 @@
 # eclipse specific
+bin/
 target/
 .settings/
 .project

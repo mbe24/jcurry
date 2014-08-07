@@ -36,9 +36,8 @@ public final class Function4<T, E extends Exception, P1, P2, P3, P4> extends
 	}
 
 	@Override
-	protected Function3<T, E, P1, P2, P3> lof(CommonExecutable<T, E> executable,
-			Object[] args) {
-		return new Function3<>(executable, args);
+	protected Function3<T, E, P1, P2, P3> lof(CommonExecutable<T, E> function, Object[] parameters) {
+    return new Function3<>(function, parameters);
 	}
 
 	@Override

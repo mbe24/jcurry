@@ -130,7 +130,7 @@ public class Example {
 			return name;
 		}
 
-		public boolean fillTank(int liter) throws IOException {
+		public boolean fillTank(@SuppressWarnings ("unused") int liter) throws IOException {
 			throw new IOException("tank is full");
 		}
 

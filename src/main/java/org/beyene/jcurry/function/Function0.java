@@ -43,7 +43,7 @@ public final class Function0<T, E extends Exception> extends
 	}
 
 	@Override
-	protected T lof(CommonExecutable<T, E> executable, Object[] args) {
+	protected T lof(CommonExecutable<T, E> function, Object[] parameters) {
 		return null;
 	}
 
