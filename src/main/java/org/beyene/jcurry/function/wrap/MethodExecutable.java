@@ -21,27 +21,32 @@ import java.lang.reflect.Method;
 import org.beyene.jcurry.function.wrap.exception.CommonExecutableException;
 import org.beyene.jcurry.function.wrap.exception.ReturnTypeException;
 
-class MethodExecutable<T, E extends Exception> implements CommonExecutable<T, E> {
+class MethodExecutable<T, E extends Exception> implements
+		CommonExecutable<T, E> {
 
 	private final Object invoker;
 	private final Method method;
 	private final Class<? extends T> returnType;
 	private final Class<E> exceptionType;
 
-	public MethodExecutable(Object invoker, Method method, Class<? extends T> returnType, Class<E> exceptionType) {
+	public MethodExecutable(Object invoker, Method method,
+			Class<? extends T> returnType, Class<E> exceptionType) {
 		this.invoker = invoker;
 		this.method = method;
 		this.method.setAccessible(true);
-		this.returnType = returnType;
-		
+
+		if (returnType.isPrimitive())
+			this.returnType = Primitives.wrap(returnType);
+		else
+			this.returnType = returnType;
+
 		Class<?> rt = method.getReturnType();
-    // TODO add suport for primitives
 		if (rt.isPrimitive())
-      ;
+			rt = Primitives.wrap(rt);
 		
-		if (!rt.isAssignableFrom(returnType))
-			throw new ReturnTypeException(rt, returnType);
-		
+		if (!rt.isAssignableFrom(this.returnType))
+			throw new ReturnTypeException(rt, this.returnType);
+
 		this.exceptionType = exceptionType;
 	}
 
@@ -55,7 +60,7 @@ class MethodExecutable<T, E extends Exception> implements CommonExecutable<T, E>
 			throw new CommonExecutableException(e.getMessage(), e);
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return method.getName();

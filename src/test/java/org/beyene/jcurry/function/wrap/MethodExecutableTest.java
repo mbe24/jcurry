@@ -16,19 +16,51 @@
  */
 package org.beyene.jcurry.function.wrap;
 
+import java.lang.reflect.Method;
+
+import junit.framework.Assert;
+
+import org.beyene.jcurry.Outline;
+import org.beyene.jcurry.function.wrap.exception.CommonExecutableException;
+import org.beyene.jcurry.function.wrap.exception.NoException;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class MethodExecutableTest {
 
-	@Test
-	public void testCall() throws Exception {
-		// TODO
-		throw new RuntimeException("not yet implemented");
+	private static MethodExecutable<Integer, NoException> meAdd;
+	private static MethodExecutable<Integer, NumberFormatException> meParseInt;
+
+	@BeforeClass
+	public static void setUp() throws Exception {
+		Outline<TestClass> ol = new Outline<>(TestClass.class);
+
+		Method add = ol.search("add");
+		Method parse = ol.search("parse");
+
+		meAdd = new MethodExecutable<>(null, add, Integer.class, NoException.class);
+		meParseInt = new MethodExecutable<>(new TestClass(), parse,	Integer.class, NumberFormatException.class);
+
 	}
 
 	@Test
+	public void testCall() throws Exception {
+		Integer result = meAdd.call(9, 10);
+		Assert.assertEquals(19, (int) result);
+
+		result = meParseInt.call("55");
+		Assert.assertEquals(55, (int) result);
+
+	}
+
+	@Test(expected = CommonExecutableException.class)
+	public void testCallFail() throws Exception {
+		meParseInt.call("55-fail");
+		Assert.fail();
+	}
+	
+	@Test
 	public void testGetExceptionType() throws Exception {
-		// TODO
-		throw new RuntimeException("not yet implemented");
+		Assert.assertTrue(meParseInt.getExceptionType().equals(NumberFormatException.class));
 	}
 }

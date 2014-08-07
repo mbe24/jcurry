@@ -16,19 +16,39 @@
  */
 package org.beyene.jcurry.function.wrap;
 
+import java.lang.reflect.Constructor;
+
+import junit.framework.Assert;
+
+import org.beyene.jcurry.Outline;
+import org.beyene.jcurry.function.wrap.exception.NoException;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class ConstructorExecutableTest {
 
+	private static ConstructorExecutable<TestMessage, NoException> ceCtor;
+
+	private static String message = "ConcreteMessage";
+	private static String author = "Human";
+
+	@BeforeClass
+	public static void setUp() throws Exception {
+		Outline<TestMessage> ol = new Outline<>(TestMessage.class);
+
+		Constructor<TestMessage> ctor = ol.constructorMap().get(2).iterator().next();
+		ceCtor = new ConstructorExecutable<>(ctor, NoException.class);
+	}
+
 	@Test
 	public void testCall() throws Exception {
-		// TODO
-		throw new RuntimeException("not yet implemented");
+		TestMessage object = ceCtor.call(message, author);
+		Assert.assertEquals(message, object.getMessage());
+		Assert.assertEquals(author, object.getAuthor());
 	}
 
 	@Test
 	public void testGetExceptionType() throws Exception {
-		// TODO
-		throw new RuntimeException("not yet implemented");
+		Assert.assertTrue(ceCtor.getExceptionType().equals(NoException.class));
 	}
 }

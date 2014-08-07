@@ -14,15 +14,23 @@
  * limitations under the License.
  * 
  */
-package org.beyene.jcurry;
+package org.beyene.jcurry.function.wrap;
 
-public final class Methods {
+class TestMessage {
 
-	private Methods() {
-		throw new AssertionError("Class should not be instantiated!");
+	private final String message;
+	private final String author;
+
+	public TestMessage(String message, String author) {
+		this.message = message;
+		this.author = author;
 	}
 
-	public static <T> Outline<T> get(Class<T> clazz) {
-		return new Outline<T>(clazz);
+	public String getMessage() {
+		return message;
+	}
+
+	public String getAuthor() {
+		return author;
 	}
 }

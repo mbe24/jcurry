@@ -14,15 +14,14 @@
  * limitations under the License.
  * 
  */
-package org.beyene.jcurry;
+package org.beyene.jcurry.function.wrap;
 
-public final class Methods {
-
-	private Methods() {
-		throw new AssertionError("Class should not be instantiated!");
+class TestClass {
+	public static int add(int a, int b) {
+		return a + b;
 	}
 
-	public static <T> Outline<T> get(Class<T> clazz) {
-		return new Outline<T>(clazz);
+	public int parse(String s) throws NumberFormatException {
+		return Integer.parseInt(s);
 	}
 }
