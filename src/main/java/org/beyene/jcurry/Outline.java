@@ -110,12 +110,12 @@ public final class Outline<T> implements Iterable<Method> {
 		return false;
 	}
 
-	public Method search(String name) throws NoSuchMethodException {
+	public Method search(String name) throws MethodNotFoundException {
 		Method m = regExSearch(name);
 		if (m != null)
 			return m;
 
-		throw new NoSuchMethodException(String.format(
+		throw new MethodNotFoundException(String.format(
 				"There is no method in class %s matching '%s'!",
 				clazz.getCanonicalName(), name));
 	}
