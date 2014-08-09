@@ -8,5 +8,6 @@ Currying for Java
 
 Jcurry is a library created to enrich Java with functions as first class objects and currying (known from functional programming). Jcurry provides means to turn ordinary methods into first class function objects.
 
+### Documentation ###
 
-
+The classes documentation is available here http://mbe24.github.io/jcurry/.
