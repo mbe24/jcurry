@@ -18,7 +18,7 @@ package org.beyene.jcurry.function.wrap;
 
 import java.lang.reflect.Constructor;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.beyene.jcurry.Outline;
 import org.beyene.jcurry.function.wrap.exception.NoException;

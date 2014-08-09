@@ -36,7 +36,7 @@ import org.beyene.jcurry.function.wrap.exception.CommonExecutableException;
 public interface CommonExecutable<T, E extends Exception> {
 
 	/**
-	 * Calls function with parameter list given parameter list.
+	 * Calls function with given parameter list.
 	 * 
 	 * @param args
 	 *            method parameter

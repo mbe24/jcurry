@@ -2,7 +2,7 @@ package org.beyene.jcurry.function.wrap;
 
 import java.lang.reflect.Method;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.beyene.jcurry.Outline;
 import org.junit.BeforeClass;

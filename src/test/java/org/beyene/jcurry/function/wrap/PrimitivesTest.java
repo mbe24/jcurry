@@ -1,6 +1,6 @@
 package org.beyene.jcurry.function.wrap;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 
