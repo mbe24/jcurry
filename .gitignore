@@ -8,3 +8,6 @@ target/
 # gradle specific
 build/
 .gradle/
+
+# sonar specific
+.sonar/
